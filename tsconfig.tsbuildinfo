@@ -1,0 +1,1 @@
+{"root":["./dev/lib/html.js","./dev/lib/math-bracket-flow.js","./dev/lib/math-flow.js","./dev/lib/math-parens-text.js","./dev/lib/math-text.js","./dev/lib/syntax.js","./test/index.js","./dev/index.d.ts"],"version":"5.8.2"}
