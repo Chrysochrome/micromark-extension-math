@@ -1,5 +1,5 @@
 /**
- * @import {Options} from 'micromark-extension-math'
+ * @import {Options} from 'micromark-extension-math-brackets'
  * @import {Construct, Previous, Resolver, State, Token, TokenizeContext, Tokenizer} from 'micromark-util-types'
  */
 
@@ -29,10 +29,10 @@ export function mathParensText(_options) {
     const self = this
     /** @type {Token} */
     let token
-    
+
     // 标记是否找到闭合的右括号
     let foundClosingParen = false
-    
+
     return start
 
     /**
@@ -130,6 +130,12 @@ export function mathParensText(_options) {
      * @type {State}
      */
     function closeParenthesis(code) {
+      // 处理EOF情况
+      if (code === codes.eof) {
+        effects.exit('mathTextSequence')
+        return nok(code)
+      }
+
       if (code === codes.rightParenthesis) {
         // 标记找到了闭合括号
         foundClosingParen = true
@@ -139,11 +145,17 @@ export function mathParensText(_options) {
         return ok(code)
       }
 
-      // Otherwise it's just a backslash as data
-      token = effects.enter('mathTextData')
-      effects.consume(code) // Consume the backslash
+      // 如果不是右括号，我们需要将反斜杠视为普通文本
+      // 退出当前的 mathTextSequence
       effects.exit('mathTextSequence')
-      return data(code)
+
+      // 处理反斜杠后面的字符作为普通数据
+      effects.enter('mathTextData')
+      effects.consume(code)
+      effects.exit('mathTextData')
+
+      // 返回到 between 状态继续处理后续内容
+      return between
     }
 
     /**

@@ -31,7 +31,7 @@ function tokenizeMathBracketFlow(effects, ok, nok) {
     tail && tail[1].type === types.linePrefix
       ? tail[2].sliceSerialize(tail[1], true).length
       : 0
-  
+
   // 标记是否找到了闭合的右括号
   let foundClosingBracket = false
 
@@ -270,7 +270,7 @@ function tokenizeMathBracketFlow(effects, ok, nok) {
     if (code === codes.eof && !foundClosingBracket) {
       return nok(code)
     }
-    
+
     effects.exit('mathFlow')
     return ok(code)
   }

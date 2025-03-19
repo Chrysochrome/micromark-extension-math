@@ -1,4 +1,4 @@
-# micromark-extension-math
+# micromark-extension-math-brackets
 
 [![Build][build-badge]][build]
 [![Coverage][coverage-badge]][coverage]
@@ -8,7 +8,7 @@
 [![Backers][backers-badge]][collective]
 [![Chat][chat-badge]][chat]
 
-[micromark][] extensions to support math (`$C_L$`).
+[micromark][] extensions to support math (`$C_L$`) with additional syntax support for parentheses (`\(C_L\)`) and brackets (`\[C_L\]`).
 
 ## Contents
 
@@ -34,19 +34,27 @@
 
 ## What is this?
 
-This package contains two extensions that add support for math syntax
+This package contains extensions that add support for math syntax
 in markdown to [`micromark`][micromark].
 
 As there is no spec for math in markdown, this extension follows how code
-(fenced and text) works in Commonmark, but uses dollars.
+(fenced and text) works in Commonmark, but uses dollars, parentheses, and brackets.
+
+This package extends the original `micromark-extension-math` by adding support for:
+- Parentheses syntax `\(...\)` for inline math expressions
+- Brackets syntax `\[...\]` for block math expressions
 
 ## When to use this
 
-This project is useful when you want to support math in markdown.
+This project is useful when you want to support math in markdown with
+alternative syntax options.
+
 Extending markdown with a syntax extension makes the markdown less portable.
 LaTeX equations are also quite hard.
 But this mechanism works well when you want authors, that have some LaTeX
 experience, to be able to embed rich diagrams of math in scientific text.
+
+The additional parentheses and brackets syntax is particularly useful in environments where dollar signs might conflict with other content or when you prefer a more visually distinct syntax for math expressions that matches LaTeX conventions.
 
 You can use these extensions when you are working with [`micromark`][micromark]
 already.
@@ -92,6 +100,12 @@ Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following equat
 $$
 L = \frac{1}{2} \rho v^2 S C_L
 $$
+
+You can also use parentheses syntax for inline math: \(L\) and brackets syntax for block math:
+
+\[
+L = \frac{1}{2} \rho v^2 S C_L
+\]
 ```
 
 …and our module `example.js` looks as follows:
@@ -113,6 +127,8 @@ console.log(output)
 
 ```html
 <p>Lift(<span class="math math-inline"><span class="katex">…</span></span>) can be determined by Lift Coefficient (<span class="math math-inline"><span class="katex">…</span></span>) like the following equation.</p>
+<div class="math math-display"><span class="katex-display"><span class="katex">…</span></span></div>
+<p>You can also use parentheses syntax for inline math: <span class="math math-inline"><span class="katex">…</span></span> and brackets syntax for block math:</p>
 <div class="math math-display"><span class="katex-display"><span class="katex">…</span></span></div>
 ```
 
@@ -226,18 +242,24 @@ Math forms with the following BNF:
 ```abnf
 ; Restriction: the number of markers in the closing sequence must be equal
 ; to the number of markers in the opening sequence.
-mathText ::= sequenceText 1*byte sequenceText
-mathFlow ::= fenceOpen *( eol *line ) [ eol fenceClose ]
+mathText ::= sequenceText 1*byte sequenceText | parensText 1*byte parensText
+mathFlow ::= fenceOpen *( eol *line ) [ eol fenceClose ] | bracketOpen *( eol *line ) [ eol bracketClose ]
 
 ; Restriction: not preceded or followed by the marker.
 sequenceText ::= 1*"$"
-
 fenceOpen ::= sequenceFlow meta
 ; Restriction: the number of markers in the closing fence sequence must be
 ; equal to or greater than the number of markers in the opening fence
 ; sequence.
 fenceClose ::= sequenceFlow *spaceOrTab
 sequenceFlow ::= 2*"$"
+
+; Parentheses syntax for inline math
+parensText ::= "\(" 1*byte "\)"
+; Brackets syntax for block math
+bracketOpen ::= "\[" meta
+bracketClose ::= "\]" *spaceOrTab
+
 ; Restriction: the marker cannot occur in `meta`
 meta ::= 1*line
 
@@ -255,10 +277,26 @@ wrapping it in bigger or smaller sequences:
 Include more: $a$$b$ or include less: $$a$b$$.
 ```
 
-It is also possible to include just one marker:
+Similarly, you can use parentheses and brackets syntax which follows LaTeX conventions:
 
 ```markdown
-Include just one: $$ $ $$.
+Inline math with parentheses: \(x^2 + y^2 = z^2\)
+
+Block math with brackets:
+\[
+\sum_{i=1}^{n} i = \frac{n(n+1)}{2}
+\]
+```
+
+It's also possible to mix different syntaxes in the same document:
+
+```markdown
+Dollar syntax: $E = mc^2$
+Parentheses syntax: \(E = mc^2\)
+Brackets syntax for blocks:
+\[
+E = mc^2
+\]
 ```
 
 Sequences are “gready”, in that they cannot be preceded or followed by more
@@ -352,25 +390,18 @@ abide by its terms.
 
 ## License
 
-[MIT][license] © [Titus Wormer][author]
+[MIT][license] © [Titus Wormer][author] and [Chrysochrome][chrysochrome]
 
 <!-- Definitions -->
 
-[build-badge]: https://github.com/micromark/micromark-extension-math/workflows/main/badge.svg
-
-[build]: https://github.com/micromark/micromark-extension-math/actions
-
-[coverage-badge]: https://img.shields.io/codecov/c/github/micromark/micromark-extension-math.svg
-
-[coverage]: https://codecov.io/github/micromark/micromark-extension-math
-
-[downloads-badge]: https://img.shields.io/npm/dm/micromark-extension-math.svg
-
-[downloads]: https://www.npmjs.com/package/micromark-extension-math
-
-[size-badge]: https://img.shields.io/badge/dynamic/json?label=minzipped%20size&query=$.size.compressedSize&url=https://deno.bundlejs.com/?q=micromark-extension-math
-
-[size]: https://bundlejs.com/?q=micromark-extension-math
+[build-badge]: https://github.com/Chrysochrome/micromark-extension-math/workflows/main/badge.svg
+[build]: https://github.com/Chrysochrome/micromark-extension-math/actions
+[coverage-badge]: https://img.shields.io/codecov/c/github/Chrysochrome/micromark-extension-math.svg
+[coverage]: https://codecov.io/github/Chrysochrome/micromark-extension-math
+[downloads-badge]: https://img.shields.io/npm/dm/micromark-extension-math-brackets.svg
+[downloads]: https://www.npmjs.com/package/micromark-extension-math-brackets
+[size-badge]: https://img.shields.io/badge/dynamic/json?label=minzipped%20size&query=$.size.compressedSize&url=https://deno.bundlejs.com/?q=micromark-extension-math-brackets
+[size]: https://bundlejs.com/?q=micromark-extension-math-brackets
 
 [sponsors-badge]: https://opencollective.com/unified/sponsors/badge.svg
 
@@ -389,6 +420,8 @@ abide by its terms.
 [license]: license
 
 [author]: https://wooorm.com
+
+[chrysochrome]: https://github.com/Chrysochrome
 
 [contributing]: https://github.com/micromark/.github/blob/main/contributing.md
 

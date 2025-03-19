@@ -1,7 +1,7 @@
 {
-  "name": "micromark-extension-math",
-  "version": "3.1.0",
-  "description": "micromark extension to support math (`$C_L$`)",
+  "name": "micromark-extension-math-brackets",
+  "version": "1.0.1",
+  "description": "micromark extension to support math (`$C_L$`) with additional bracket syntax support",
   "license": "MIT",
   "keywords": [
     "micromark",
@@ -11,17 +11,19 @@
     "latex",
     "tex",
     "markdown",
-    "unified"
+    "unified",
+    "brackets"
   ],
-  "repository": "micromark/micromark-extension-math",
-  "bugs": "https://github.com/micromark/micromark-extension-math/issues",
+  "repository": "Chrysochrome/micromark-extension-math",
+  "bugs": "https://github.com/Chrysochrome/micromark-extension-math/issues",
   "funding": {
     "type": "opencollective",
     "url": "https://opencollective.com/unified"
   },
-  "author": "Titus Wormer <tituswormer@gmail.com> (https://wooorm.com)",
+  "author": "Chrysochrome <guoxun13sdct@163.com> (https://github.com/Chrysochrome)",
   "contributors": [
-    "Titus Wormer <tituswormer@gmail.com> (https://wooorm.com)"
+    "Titus Wormer <tituswormer@gmail.com> (https://wooorm.com)",
+    "Chrysochrome <guoxun13sdct@163.com> (https://github.com/Chrysochrome)"
   ],
   "sideEffects": false,
   "type": "module",
