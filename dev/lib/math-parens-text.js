@@ -29,7 +29,10 @@ export function mathParensText(_options) {
     const self = this
     /** @type {Token} */
     let token
-
+    
+    // 标记是否找到闭合的右括号
+    let foundClosingParen = false
+    
     return start
 
     /**
@@ -84,6 +87,10 @@ export function mathParensText(_options) {
      */
     function between(code) {
       if (code === codes.eof) {
+        // 如果遇到文件结束但没有找到闭合括号，则视为普通文本
+        if (!foundClosingParen) {
+          return nok(code)
+        }
         return nok(code)
       }
 
@@ -124,6 +131,8 @@ export function mathParensText(_options) {
      */
     function closeParenthesis(code) {
       if (code === codes.rightParenthesis) {
+        // 标记找到了闭合括号
+        foundClosingParen = true
         effects.consume(code)
         effects.exit('mathTextSequence')
         effects.exit('mathText')
